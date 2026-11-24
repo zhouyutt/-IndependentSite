@@ -1,0 +1,19 @@
+www.{$SITE_DOMAIN:dashingnoah.top} {
+	redir https://{$SITE_DOMAIN:dashingnoah.top}{uri} 308
+}
+
+{$SITE_DOMAIN:dashingnoah.top} {
+	root * /srv/storefront
+	encode zstd gzip
+
+	@catalog {
+		method GET HEAD
+		path_regexp product ^/api/products(/[^/]+)?/?$
+	}
+	@api path /api /api/*
+	route {
+		reverse_proxy @catalog api:3001
+		respond @api 404
+		file_server
+	}
+}

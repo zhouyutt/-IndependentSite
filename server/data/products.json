@@ -38,9 +38,10 @@
     "amazonStoreUrl": "https://www.amazon.com/DASHINGNOAH-Foldable-Push-Pull-Adjustable-Equipment/dp/B0D7PYYZW7?ref_=ast_sto_dp",
     "sourceAsin": "B0D7PYYZW7",
     "status": "active",
-    "company": "FREG LLC",
-    "businessType": "E-COMMERCE, RETAIL, WHOLESALE",
-    "companyPrincipalOffice": "26682 ALMOND AVENUE UNIT B, REDLANDS, CA 92374"
+    "brand": "DASHINGNOAH",
+    "company": "",
+    "businessType": "",
+    "companyPrincipalOffice": ""
   },
   {
     "id": "dn-basketball-hoop-853",
@@ -81,9 +82,10 @@
     "amazonStoreUrl": "https://www.amazon.com/DASHINGNOAH-Basketball-4-82-8-53FT-Adjustable-Backboard/dp/B0DBH3RLX2?ref_=ast_sto_dp",
     "sourceAsin": "B0DBH3RLX2",
     "status": "active",
-    "company": "FREG LLC",
-    "businessType": "E-COMMERCE, RETAIL, WHOLESALE",
-    "companyPrincipalOffice": "26682 ALMOND AVENUE UNIT B, REDLANDS, CA 92374"
+    "brand": "DASHINGNOAH",
+    "company": "",
+    "businessType": "",
+    "companyPrincipalOffice": ""
   },
   {
     "id": "dn-basketball-hoop-teen",
@@ -123,9 +125,10 @@
     "amazonStoreUrl": "https://www.amazon.com/DASHINGNOAH-Basketball-Adjustable-Backboard-Teenagers/dp/B0DBH4WC32?ref_=ast_sto_dp",
     "sourceAsin": "B0DBH4WC32",
     "status": "active",
-    "company": "FREG LLC",
-    "businessType": "E-COMMERCE, RETAIL, WHOLESALE",
-    "companyPrincipalOffice": "26682 ALMOND AVENUE UNIT B, REDLANDS, CA 92374"
+    "brand": "DASHINGNOAH",
+    "company": "",
+    "businessType": "",
+    "companyPrincipalOffice": ""
   },
   {
     "id": "dn-portable-treadmill",
@@ -166,8 +169,9 @@
     "amazonStoreUrl": "https://www.amazon.com/Portable-Treadmills-Treadmill-Capacity-Compatible/dp/B0D7QQ6C19?ref_=ast_sto_dp",
     "sourceAsin": "B0D7QQ6C19",
     "status": "active",
-    "company": "FREG LLC",
-    "businessType": "E-COMMERCE, RETAIL, WHOLESALE",
-    "companyPrincipalOffice": "26682 ALMOND AVENUE UNIT B, REDLANDS, CA 92374"
+    "brand": "DASHINGNOAH",
+    "company": "",
+    "businessType": "",
+    "companyPrincipalOffice": ""
   }
 ]

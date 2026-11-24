@@ -10,7 +10,7 @@ import { cartRouter } from './cart/cart.routes.js';
 import { adminRouter } from './admin/admin.routes.js';
 import { paymentsRouter } from './payments/payments.routes.js';
 
-export function createApp() {
+export function createApp({ catalogOnly = process.env.CATALOG_ONLY === 'true' } = {}) {
   const app = express();
 
   app.use(requestId);
@@ -29,9 +29,11 @@ export function createApp() {
   app.get('/health', (_req, res) => res.json({ status: 'ok' }));
   app.get('/ready', (_req, res) => res.json({ status: 'ok', checks: { catalog: 'ok' } }));
   app.use('/api', catalogRouter);
-  app.use('/api', cartRouter);
-  app.use('/api', paymentsRouter);
-  app.use('/api', adminRouter);
+  if (!catalogOnly) {
+    app.use('/api', cartRouter);
+    app.use('/api', paymentsRouter);
+    app.use('/api', adminRouter);
+  }
   app.use(notFound);
   app.use(errorHandler);
 

@@ -89,7 +89,7 @@ export async function createPayPalOrder(sessionId, customer) {
       purchase_units: [{
         reference_id: pending.id,
         invoice_id: pending.id,
-        description: 'FREG LLC DASHINGNOAH equipment order',
+        description: 'DASHINGNOAH equipment order',
         amount: {
           currency_code: 'USD',
           value: pending.summary.total.toFixed(2),
@@ -128,7 +128,7 @@ export async function createPayPalOrder(sessionId, customer) {
         paypal: {
           experience_context: {
             payment_method_preference: 'IMMEDIATE_PAYMENT_REQUIRED',
-            brand_name: 'FREG LLC',
+            brand_name: 'DASHINGNOAH',
             shipping_preference: 'SET_PROVIDED_ADDRESS',
             user_action: 'PAY_NOW'
           }

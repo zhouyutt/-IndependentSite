@@ -1,4 +1,4 @@
-# FREG LLC 美国独立站收单与结算对接方案
+# DASHINGNOAH 独立站美国市场收单与结算对接方案
 
 更新日期：2026-06-22
 
@@ -8,7 +8,7 @@
 
 - Stripe：Visa、Mastercard、American Express、Discover、Apple Pay、Google Pay、Link、Cash App Pay、ACH Direct Debit，以及按审核结果启用 Affirm/Klarna。
 - PayPal Checkout：PayPal、Venmo、PayPal Pay Later。关闭 PayPal 的普通银行卡入口，避免和 Stripe 重复路由。
-- USD 定价、USD 收单，结算到 FREG LLC 的美国公司银行账户。
+- USD 定价、USD 收单，结算到支付机构核准的商户银行账户。
 - 前端使用 Stripe Payment Element/Express Checkout Element 和 PayPal JS SDK；Node 后端统一计算金额、创建支付、接收 Webhook、退款和对账。
 
 这套方案适合当前规模：无月费起步快、支付方式完整、开发和运营成本较低，并保留未来把高交易量流量迁移到 Adyen 或协商 IC+ 费率的空间。
@@ -23,7 +23,7 @@
 | Adyen | 卡、钱包、ACH、Cash App Pay、Affirm、Afterpay、PayPal/Venmo 等 | 固定处理费 + 各支付方式费用，通常需销售报价 | 工作日净额结算，支持销售日结算和详细 Settlement Report | 月交易额明显增长、有多地区/线下统一收单需求后再评估 |
 | Checkout.com | 卡、钱包、本地支付，企业定制 | 销售报价 | 企业级资金和多币种管理 | 更适合已有较大规模和专业支付团队的企业 |
 
-费率会因行业、拒付率、国际卡、币种转换和交易量变化，最终以 FREG LLC 审核后的合同为准。
+费率会因行业、拒付率、国际卡、币种转换和交易量变化，最终以商户与支付机构签订的合同为准。
 
 ## 3. 推荐支付展示
 
@@ -157,14 +157,14 @@ Stripe Webhook 必须读取未经 JSON 中间件改写的 raw body，并使用 `
 - 高客单体育器材重点保存物流单号、签收证明、商品描述、退换货沟通和设备序列信息，便于拒付举证。
 - 管理后台退款接口启用角色权限、二次确认和不可修改审计日志。
 - 日志禁止记录卡号、CVV、access token、Webhook secret 和完整敏感个人信息。
-- 上线前完善网站的 Shipping、Returns & Refunds、Privacy、Terms、Contact 页面，并确保账单描述符能让买家识别 FREG LLC/品牌。
+- 上线前完善网站的 Shipping、Returns & Refunds、Privacy、Terms、Contact 页面，并确保账单描述符能让买家识别 DASHINGNOAH 订单。
 - 支付通道不等于销售税合规。需由税务顾问确认各州 nexus；可另行接入 Stripe Tax、Avalara 或 TaxJar。
 
 ## 10. 商户开户材料
 
 建议提前准备：
 
-- FREG LLC 注册文件、EIN、美国公司银行账户证明。
+- 根据实际经营主体及开户地区准备相应的登记文件、税务识别号和银行账户证明。
 - 负责人和 25% 以上受益所有人的身份及地址信息（以通道实际 KYC 要求为准）。
 - 网站域名和公司邮箱。
 - 产品页、真实售价、库存/供应链说明、预计月交易额和平均客单价。

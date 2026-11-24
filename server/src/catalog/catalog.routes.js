@@ -21,7 +21,7 @@ catalogRouter.get('/products/featured', async (_req, res, next) => {
 
 catalogRouter.get('/products/:id', async (req, res, next) => {
   try {
-    res.json({ product: await getProductById(req.params.id) });
+    res.json({ product: await getProductById(req.params.id, { publishedOnly: true }) });
   } catch (err) {
     next(err);
   }

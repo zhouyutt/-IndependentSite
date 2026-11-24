@@ -28,6 +28,16 @@ test('catalog returns products and facets', async () => {
   assert.equal(res.body.products[0].source, 'Amazon product link supplied by user');
 });
 
+test('catalog-only deployment serves products and omits shopping and administration routes', async () => {
+  const catalog = request(createApp({ catalogOnly: true }));
+  await catalog.get('/api/products').expect(200);
+  await catalog.get('/api/cart').expect(404);
+  await catalog.get('/api/orders').expect(404);
+  await catalog.post('/api/checkout').expect(404);
+  await catalog.get('/api/admin/products').expect(404);
+  await catalog.get('/api/payments/paypal/config').expect(404);
+});
+
 test('cart add and checkout flow works', async () => {
   const session = 'test-session';
 
@@ -134,8 +144,12 @@ test('admin can create and update products', async () => {
 
     assert.equal(created.body.product.id, id);
 
-    const publicCatalog = await api.get('/api/products').expect(200);
+    const publicCatalog = await api.get('/api/products?includeInactive=true').expect(200);
     assert.equal(publicCatalog.body.products.some((product) => product.id === id), false);
+    assert.equal(publicCatalog.body.facets.collections.includes('QA Collection'), false);
+    await api.get(`/api/products/${id}`).expect(404);
+    const privateCatalog = await api.get('/api/admin/products').expect(200);
+    assert.equal(privateCatalog.body.products.some((product) => product.id === id), true);
 
     const updated = await api
       .patch(`/api/admin/products/${id}`)

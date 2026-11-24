@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue';
 import {
   Box,
   DataAnalysis,
@@ -31,6 +31,8 @@ const productSearch = ref('');
 const productStatus = ref('');
 const orderStatus = ref('');
 const paypalSaving = ref(false);
+const wideAdminViewport = window.matchMedia('(min-width: 960px)');
+const pinProductColumns = ref(wideAdminViewport.matches);
 
 const defaultAmazonUrl = 'https://www.amazon.com/DASHINGNOAH-Basketball-4-82-8-53FT-Adjustable-Backboard/dp/B0DBH3RLX2?ref_=ast_sto_dp';
 
@@ -193,12 +195,8 @@ async function saveProduct() {
     stock: Number(productForm.stock),
     colors: [...new Set([productForm.color, 'Black', 'Blue'].filter(Boolean))],
     gallery: [productForm.image],
-    features: ['FREG LLC catalog source', 'Amazon link and ASIN tracking', 'Managed through FREG Operations'],
     amazonStoreUrl: productForm.amazonStoreUrl,
-    source: 'Amazon product link supplied by user',
-    company: 'FREG LLC',
-    businessType: 'E-COMMERCE, RETAIL, WHOLESALE',
-    companyPrincipalOffice: '26682 ALMOND AVENUE UNIT B, REDLANDS, CA 92374'
+    source: 'Amazon product link supplied by user'
   };
 
   if (editingProductId.value) {
@@ -253,14 +251,22 @@ async function disconnectPayPal() {
   ElMessage.success('PayPal 收款账户已解绑。');
 }
 
-onMounted(loadAdmin);
+function updatePinnedColumns(event) {
+  pinProductColumns.value = event.matches;
+}
+
+onMounted(() => {
+  wideAdminViewport.addEventListener('change', updatePinnedColumns);
+  loadAdmin();
+});
+onUnmounted(() => wideAdminViewport.removeEventListener('change', updatePinnedColumns));
 </script>
 
 <template>
   <el-container class="admin-layout">
     <el-aside width="232px" class="admin-aside">
       <div class="brand-block">
-        <strong>FREG LLC</strong>
+        <strong>DASHINGNOAH</strong>
         <span>运营后台</span>
       </div>
       <el-menu :default-active="activeView" class="side-menu" @select="activeView = $event">
@@ -277,13 +283,12 @@ onMounted(loadAdmin);
       <el-header class="admin-header">
         <div>
           <el-breadcrumb separator="/">
-            <el-breadcrumb-item>FREG LLC</el-breadcrumb-item>
+            <el-breadcrumb-item>DASHINGNOAH</el-breadcrumb-item>
             <el-breadcrumb-item>{{ activeView === 'dashboard' ? '数据看板' : activeView === 'products' ? '商品管理' : activeView === 'orders' ? '交易详情' : activeView === 'payments' ? '收款账户' : activeView === 'inventory' ? '库存预警' : '运营设置' }}</el-breadcrumb-item>
           </el-breadcrumb>
           <h1>{{ activeView === 'dashboard' ? '运营数据看板' : activeView === 'products' ? '商品管理' : activeView === 'orders' ? '交易详情' : activeView === 'payments' ? '收款账户' : activeView === 'inventory' ? '库存预警' : '运营设置' }}</h1>
         </div>
         <div class="header-actions">
-          <el-tag type="success">加州 · 电商 / 零售 / 批发</el-tag>
           <el-button :icon="Refresh" @click="loadAdmin">刷新</el-button>
         </div>
       </el-header>
@@ -331,7 +336,7 @@ onMounted(loadAdmin);
           <el-card shadow="never">
             <div class="toolbar">
               <div class="toolbar-left">
-                <el-input v-model="productSearch" :prefix-icon="Search" clearable placeholder="搜索商品名称 / 分类 / 产品线" style="width: 320px" />
+                <el-input v-model="productSearch" :prefix-icon="Search" clearable placeholder="搜索商品名称 / 分类 / 产品线" class="product-search" />
                 <el-select v-model="productStatus" clearable placeholder="状态" style="width: 140px">
                   <el-option label="在售" value="active" />
                   <el-option label="草稿" value="draft" />
@@ -341,8 +346,8 @@ onMounted(loadAdmin);
               <el-button type="primary" :icon="Plus" @click="openCreateProduct">上架商品</el-button>
             </div>
 
-            <el-table :data="filteredProducts" border stripe size="small" empty-text="暂无商品">
-              <el-table-column label="商品" min-width="300" fixed>
+            <el-table :data="filteredProducts" border stripe scrollbar-always-on size="small" empty-text="暂无商品">
+              <el-table-column label="商品" :min-width="pinProductColumns ? 300 : 230" :fixed="pinProductColumns">
                 <template #default="{ row }">
                   <div class="product-cell">
                     <img :src="row.image" :alt="row.name" />
@@ -354,7 +359,7 @@ onMounted(loadAdmin);
               <el-table-column prop="stock" label="库存" width="90" sortable />
               <el-table-column label="状态" width="100"><template #default="{ row }"><el-tag :type="statusType(row.status)" size="small">{{ statusLabel(row.status) }}</el-tag></template></el-table-column>
               <el-table-column prop="source" label="来源" min-width="150" />
-              <el-table-column label="操作" width="150" fixed="right">
+              <el-table-column label="操作" width="150" :fixed="pinProductColumns ? 'right' : false">
                 <template #default="{ row }">
                   <el-button size="small" @click="editProduct(row)">编辑</el-button>
                   <el-button size="small" type="danger" text @click="removeProduct(row)">删除</el-button>
@@ -474,9 +479,10 @@ onMounted(loadAdmin);
           <el-card shadow="never">
             <template #header><span>运营设置</span></template>
             <el-descriptions border :column="1" size="small">
-              <el-descriptions-item label="公司名称">FREG LLC</el-descriptions-item>
-              <el-descriptions-item label="业务类型">E-COMMERCE, RETAIL, WHOLESALE</el-descriptions-item>
-              <el-descriptions-item label="主办公室">26682 ALMOND AVENUE UNIT B, REDLANDS, CA 92374</el-descriptions-item>
+              <el-descriptions-item label="品牌名称">DASHINGNOAH</el-descriptions-item>
+              <el-descriptions-item label="客服邮箱"><a href="mailto:support@dashingnoah.top">support@dashingnoah.top</a></el-descriptions-item>
+              <el-descriptions-item label="独立站"><a href="https://dashingnoah.top/" target="_blank" rel="noopener">dashingnoah.top</a></el-descriptions-item>
+              <el-descriptions-item label="Amazon 品牌店"><a href="https://www.amazon.com/stores/DASHINGNOAH/page/EA8BE3A0-3BA6-4DA7-98B7-C1D6F0147970" target="_blank" rel="noopener">DASHINGNOAH</a></el-descriptions-item>
               <el-descriptions-item label="商品来源">用户提供的 DASHINGNOAH Amazon 产品链接</el-descriptions-item>
               <el-descriptions-item label="默认 Amazon URL">{{ defaultAmazonUrl }}</el-descriptions-item>
             </el-descriptions>
@@ -485,7 +491,7 @@ onMounted(loadAdmin);
       </el-main>
     </el-container>
 
-    <el-dialog v-model="productDialogOpen" :title="editingProductId ? '编辑商品' : '上架商品'" width="720px" destroy-on-close>
+    <el-dialog v-model="productDialogOpen" :title="editingProductId ? '编辑商品' : '上架商品'" class="product-dialog" width="min(720px, calc(100% - 24px))" destroy-on-close>
       <el-form label-position="top" class="product-form">
         <el-row :gutter="12">
           <el-col :span="12"><el-form-item label="商品 ID"><el-input v-model="productForm.id" aria-label="商品 ID" :disabled="!!editingProductId" /></el-form-item></el-col>
@@ -515,7 +521,7 @@ onMounted(loadAdmin);
       </template>
     </el-dialog>
 
-    <el-drawer v-model="orderDrawerOpen" title="交易详情" size="460px">
+    <el-drawer v-model="orderDrawerOpen" title="交易详情" class="order-drawer" size="min(460px, 100%)">
       <template v-if="selectedOrder">
         <el-descriptions border :column="1" size="small">
           <el-descriptions-item label="订单号">{{ selectedOrder.id }}</el-descriptions-item>

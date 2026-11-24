@@ -3,7 +3,7 @@ import { listOrders } from '../cart/cart.store.js';
 
 export async function getDashboard() {
   const [{ products }, orders] = await Promise.all([
-    getCatalog({ includeInactive: 'true' }),
+    getCatalog({}, { includeInactive: true }),
     Promise.resolve(listOrders())
   ]);
   const revenue = orders.reduce((sum, order) => sum + order.summary.total, 0);
@@ -26,7 +26,7 @@ export async function getDashboard() {
 }
 
 export async function listAdminProducts() {
-  return getCatalog({ includeInactive: 'true', sort: 'popular' });
+  return getCatalog({ sort: 'popular' }, { includeInactive: true });
 }
 
 export async function createAdminProduct(input) {

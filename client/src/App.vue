@@ -1,11 +1,20 @@
 <script setup>
 import { computed, nextTick, onMounted, reactive, ref } from 'vue';
-import { Heart, Leaf, Menu, Search, ShieldCheck, ShoppingBag, SlidersHorizontal, Star, Truck, X } from 'lucide-vue-next';
-import { storeApi } from './lib/api.js';
+import { Dumbbell, Footprints, Heart, Menu, Ruler, Search, ShoppingBag, SlidersHorizontal, Star, Truck, X } from 'lucide-vue-next';
+import { catalogOnly, storeApi } from './lib/api.js';
+import SiteFooter from './SiteFooter.vue';
+
+const amazonStoreUrl = 'https://www.amazon.com/stores/DASHINGNOAH/page/EA8BE3A0-3BA6-4DA7-98B7-C1D6F0147970';
+
+function amazonProductUrl(product) {
+  return /^https:\/\/(www\.)?amazon\.com\//i.test(product.amazonStoreUrl) ? product.amazonStoreUrl : amazonStoreUrl;
+}
 
 const loading = ref(true);
 const error = ref('');
 const products = ref([]);
+const productResults = ref(null);
+let latestProductRequest = 0;
 const facets = ref({ categories: [], collections: [], colors: [], priceRange: { min: 0, max: 1200 } });
 const cart = ref({ items: [], summary: { subtotal: 0, shipping: 0, tax: 0, total: 0 } });
 const wishlist = ref({ products: [] });
@@ -31,21 +40,42 @@ function money(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: value % 1 ? 2 : 0 }).format(value || 0);
 }
 
+function swatchStyle(color) {
+  const name = color.trim().toLowerCase();
+  const value = name === 'charcoal' ? '#36454f' : name;
+  return CSS.supports('color', value) ? { backgroundColor: value } : { display: 'none' };
+}
+
 async function loadProducts() {
+  const request = ++latestProductRequest;
   loading.value = true;
   error.value = '';
   try {
     const data = await storeApi.products(filters);
+    if (request !== latestProductRequest) return;
     products.value = data.products;
     facets.value = data.facets;
   } catch (err) {
-    error.value = err.message || 'Unable to load products.';
+    if (request === latestProductRequest) error.value = err.message || 'Unable to load products.';
   } finally {
-    loading.value = false;
+    if (request === latestProductRequest) loading.value = false;
   }
 }
 
+function searchProducts() {
+  loadProducts();
+  if (window.matchMedia('(max-width: 1120px)').matches) {
+    productResults.value.scrollIntoView({ block: 'start', behavior: 'instant' });
+  }
+}
+
+function showSearchResults() {
+  productResults.value.focus({ preventScroll: true });
+  productResults.value.scrollIntoView({ block: 'start' });
+}
+
 async function boot() {
+  if (catalogOnly) return loadProducts();
   await Promise.all([loadProducts(), refreshCart(), refreshWishlist(), loadPayPalConfig()]);
 }
 
@@ -152,45 +182,46 @@ onMounted(boot);
 <template>
   <div class="site-shell">
     <div class="topbar">
-      <a href="#showrooms">Showrooms</a>
-      <span><Truck :size="15" /> Free delivery on sports and fitness equipment orders.</span>
+      <a :href="amazonStoreUrl">Amazon Store</a>
+      <span><Truck :size="15" /> {{ catalogOnly ? 'Check delivery options on each Amazon listing.' : 'Free delivery on sports and fitness equipment orders.' }}</span>
       <a href="#service">Customer Service</a>
     </div>
 
     <header class="site-header">
       <button class="icon-button mobile-only" aria-label="Open navigation" @click="navOpen = true"><Menu :size="21" /></button>
-      <a class="brand" href="#home" aria-label="FREG LLC home"><span>FREG LLC</span></a>
+      <a class="brand" href="#home" aria-label="DASHINGNOAH home"><span>DASHINGNOAH</span></a>
       <nav class="desktop-nav" aria-label="Primary navigation">
         <a href="#shop">Basketball</a>
         <a href="#shop">Fitness</a>
         <a href="#shop">Strength</a>
         <a href="#collections">Collections</a>
-        <a href="#materials">The Difference</a>
+        <a href="#materials">Equipment Guide</a>
       </nav>
       <div class="header-actions">
-        <label class="search-field">
-          <Search :size="17" />
-          <input v-model="filters.q" type="search" aria-label="Search hoops, treadmills, carts" @input="loadProducts" />
-        </label>
-        <button class="icon-button" aria-label="Open cart" @click="cartOpen = true">
+        <form class="search-field" role="search" @submit.prevent="showSearchResults">
+          <input v-model="filters.q" type="search" placeholder="Search" aria-label="Search products" aria-controls="product-results" enterkeyhint="search" @input="searchProducts" />
+          <button type="submit" aria-label="Show search results"><Search :size="17" /></button>
+        </form>
+        <button v-if="!catalogOnly" class="icon-button" aria-label="Open cart" @click="cartOpen = true">
           <ShoppingBag :size="20" />
           <span v-if="cartCount" class="count">{{ cartCount }}</span>
         </button>
       </div>
     </header>
 
-    <aside class="mobile-menu" :class="{ open: navOpen }">
+    <aside class="mobile-menu" :class="{ open: navOpen }" :inert="!navOpen">
       <button class="icon-button close" aria-label="Close navigation" @click="navOpen = false"><X :size="20" /></button>
       <a href="#shop" @click="navOpen = false">Shop All</a>
       <a href="#collections" @click="navOpen = false">Collections</a>
-      <a href="#materials" @click="navOpen = false">The Difference</a>
+      <a href="#materials" @click="navOpen = false">Equipment Guide</a>
+      <a :href="amazonStoreUrl" @click="navOpen = false">Amazon Store</a>
     </aside>
 
     <main id="home">
       <section class="hero">
         <img class="hero-bg" src="/assets/product-weight-bench.jpg" alt="DASHINGNOAH foldable weight bench set in use" />
         <div class="hero-copy">
-          <p class="eyebrow">California e-commerce, retail, and wholesale</p>
+          <p class="eyebrow">DASHINGNOAH home fitness</p>
           <h1>Gear Up Your Game</h1>
           <a class="button primary" href="#shop">Shop Best Sellers</a>
         </div>
@@ -200,9 +231,9 @@ onMounted(boot);
         <article>
           <img src="/assets/promo-basketball.jpg" alt="DASHINGNOAH adjustable basketball hoop height configurations" />
           <div>
-            <p class="eyebrow">FREG LLC retail catalog</p>
-            <h2>Sports equipment for home courts and active routines.</h2>
-            <p>Basketball hoops, portable treadmills, and foldable equipment carts curated by FREG LLC for direct-to-consumer storefront browsing.</p>
+            <p class="eyebrow">Basketball hoops</p>
+            <h2>Turn your driveway into a practice court.</h2>
+            <p>Adjust the rim height for younger players, then raise it as their reach grows.</p>
             <a class="button secondary" href="#shop">Shop Now</a>
           </div>
         </article>
@@ -211,18 +242,18 @@ onMounted(boot);
           <div>
             <p class="eyebrow">Ready for training</p>
             <h2>Compact gear for everyday movement.</h2>
-            <p>Compare sports and fitness products from one organized catalog with inventory and order operations behind it.</p>
+            <p>A portable treadmill gives you room to walk or run at home and stores away after your workout.</p>
             <a class="button secondary" href="#shop">Shop Best Sellers</a>
           </div>
         </article>
       </section>
 
       <section class="difference-strip" id="materials">
-        <h2>THE FREG LLC DIFFERENCE</h2>
+        <h2>Choose equipment for your space</h2>
         <div>
-          <article><ShieldCheck :size="28" /><strong>Retail-Ready Catalog</strong><span>Products are tied to the Amazon links and ASINs you supplied.</span></article>
-          <article><Leaf :size="28" /><strong>Compact Fulfillment</strong><span>Organized categories for sports equipment, fitness gear, and accessories.</span></article>
-          <article><Truck :size="28" /><strong>Retail + Wholesale Ready</strong><span>Catalog data supports storefront sales, inventory operations, and order tracking.</span></article>
+          <article><Ruler :size="28" /><strong>Basketball hoops</strong><span>Check the rim height range against the height you want for practice.</span></article>
+          <article><Footprints :size="28" /><strong>Treadmills</strong><span>Compare the deck size and weight capacity with your workout needs.</span></article>
+          <article><Dumbbell :size="28" /><strong>Weight benches</strong><span>Check which attachments come with the bench and where it will fit when folded.</span></article>
         </div>
       </section>
 
@@ -241,10 +272,7 @@ onMounted(boot);
 
       <section class="shop-section" id="shop">
         <div class="shop-heading">
-          <div>
-            <p class="eyebrow">Shop FREG LLC catalog</p>
-            <h2>DASHINGNOAH products from the supplied Amazon links</h2>
-          </div>
+          <h2>Shop DASHINGNOAH equipment</h2>
           <button class="button ghost" @click="filters.category=''; filters.collection=''; filters.color=''; filters.maxPrice=''; filters.q=''; loadProducts()">Clear filters</button>
         </div>
 
@@ -283,34 +311,35 @@ onMounted(boot);
             </label>
           </aside>
 
-          <div class="product-area">
+          <div id="product-results" ref="productResults" class="product-area" role="region" aria-label="Product results" tabindex="-1">
             <div v-if="loading" class="product-grid"><div v-for="i in 6" :key="i" class="skeleton-card"></div></div>
             <div v-else-if="error" class="state-panel">{{ error }}</div>
             <div v-else-if="!products.length" class="state-panel">No products match those filters.</div>
             <div v-else class="product-grid">
               <article v-for="product in products" :key="product.id" class="product-card">
-                <button class="wish" :class="{ active: wishlistIds.has(product.id) }" :aria-label="`Save ${product.name}`" @click="toggleWish(product)"><Heart :size="18" /></button>
+                <button v-if="!catalogOnly" class="wish" :class="{ active: wishlistIds.has(product.id) }" :aria-label="`Save ${product.name}`" @click="toggleWish(product)"><Heart :size="18" /></button>
                 <button class="image-button" @click="selectedProduct = product"><img :src="product.image" :alt="product.name" /></button>
                 <div class="product-meta">
                   <span class="badge">{{ product.badge }}</span>
                   <button class="product-name" @click="selectedProduct = product">{{ product.name }}</button>
                   <div class="rating"><Star :size="15" fill="currentColor" /> {{ product.rating }} <span>({{ product.reviewCount }})</span></div>
                   <div class="price-row"><strong>{{ money(product.price) }}</strong><del>{{ money(product.compareAt) }}</del></div>
-                  <div class="swatches"><span v-for="color in product.colors.slice(0, 4)" :key="color" :title="color"></span></div>
-                  <button class="button full" @click="add(product)">Add to Cart</button>
+                  <div class="swatches">
+                    <span v-for="color in product.colors.slice(0, 4)" :key="color">
+                      <i aria-hidden="true" :style="swatchStyle(color)"></i>{{ color }}
+                    </span>
+                  </div>
+                  <a v-if="catalogOnly" class="button full" :href="amazonProductUrl(product)">View on Amazon</a>
+                  <button v-else class="button full" @click="add(product)">Add to Cart</button>
                 </div>
               </article>
             </div>
           </div>
         </div>
       </section>
-
-      <section class="press-band" id="reviews">
-        <p class="eyebrow">Company profile</p>
-        <h2>FREG LLC is a California company focused on e-commerce, retail, and wholesale.</h2>
-        <p>Principal office: Redlands, California. Product data remains tied to the provided DASHINGNOAH Amazon product links so real listing data can replace the local catalog when available.</p>
-      </section>
     </main>
+
+    <SiteFooter />
 
     <aside class="drawer" :class="{ open: !!selectedProduct }" aria-live="polite">
       <button class="icon-button close" aria-label="Close product details" @click="selectedProduct = null"><X :size="20" /></button>
@@ -324,11 +353,12 @@ onMounted(boot);
         <div class="detail-block"><strong>Colors</strong><div class="pill-row"><span v-for="color in selectedProduct.colors" :key="color">{{ color }}</span></div></div>
         <div class="detail-block"><strong>Features</strong><ul><li v-for="feature in selectedProduct.features" :key="feature">{{ feature }}</li></ul></div>
         <div class="spec-grid"><div v-for="(value, key) in selectedProduct.specs" :key="key"><span>{{ key }}</span><strong>{{ value }}</strong></div></div>
-        <button class="button primary full" @click="add(selectedProduct)">Add to Cart</button>
+        <a v-if="catalogOnly" class="button primary full" :href="amazonProductUrl(selectedProduct)">View on Amazon</a>
+        <button v-else class="button primary full" @click="add(selectedProduct)">Add to Cart</button>
       </template>
     </aside>
 
-    <aside class="drawer cart-drawer" :class="{ open: cartOpen }" aria-live="polite">
+    <aside v-if="!catalogOnly" class="drawer cart-drawer" :class="{ open: cartOpen }" aria-live="polite">
       <button class="icon-button close" aria-label="Close cart" @click="cartOpen = false"><X :size="20" /></button>
       <h2>Your Cart</h2>
       <div v-if="!cart.items.length" class="state-panel compact">Your equipment plan is still empty.</div>
@@ -366,6 +396,10 @@ onMounted(boot);
           <div v-show="deliveryConfirmed" ref="paypalContainer" class="paypal-buttons"></div>
           <span v-if="paypalLoading" class="payment-note">Loading PayPal...</span>
         </div>
+        <p class="checkout-policies">
+          Review our <a href="/privacy/" target="_blank" rel="noopener" aria-label="Privacy Policy (opens in a new tab)">Privacy Policy</a>
+          and <a href="/terms/" target="_blank" rel="noopener" aria-label="Terms of Service (opens in a new tab)">Terms of Service</a> before paying.
+        </p>
         <button class="button primary full" type="submit" :disabled="paypalLoading || paypalReady">{{ deliveryConfirmed ? 'PayPal Ready' : 'Continue to PayPal' }}</button>
       </form>
     </div>

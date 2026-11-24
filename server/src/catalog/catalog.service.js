@@ -5,11 +5,14 @@ function includesText(value, query) {
   return value.toLowerCase().includes(query.toLowerCase());
 }
 
-export async function getCatalog(filters = {}) {
-  let products = await loadProducts();
-  if (filters.includeInactive !== 'true') {
-    products = products.filter((product) => product.status !== 'draft' && product.status !== 'archived');
-  }
+function isPublished(product) {
+  return product.status === 'active' || product.status == null;
+}
+
+export async function getCatalog(filters = {}, { includeInactive = false } = {}) {
+  const inventory = await loadProducts();
+  const allProducts = inventory.filter((product) => includeInactive ? product.status !== 'archived' : isPublished(product));
+  let products = includeInactive ? inventory : [...allProducts];
   const q = filters.q?.trim();
 
   if (q) {
@@ -55,7 +58,6 @@ export async function getCatalog(filters = {}) {
       products.sort((a, b) => b.reviewCount - a.reviewCount);
   }
 
-  const allProducts = (await loadProducts()).filter((product) => product.status !== 'archived');
   return {
     products,
     facets: {
@@ -71,13 +73,13 @@ export async function getCatalog(filters = {}) {
 }
 
 export async function getFeaturedProducts() {
-  const products = (await loadProducts()).filter((product) => product.status !== 'draft' && product.status !== 'archived');
+  const products = (await loadProducts()).filter(isPublished);
   return products.filter((product) => ['Best Seller', 'Bundle', 'New', 'Poolside'].includes(product.badge));
 }
 
-export async function getProductById(id) {
+export async function getProductById(id, { publishedOnly = false } = {}) {
   const products = await loadProducts();
-  const product = products.find((item) => item.id === id);
+  const product = products.find((item) => item.id === id && (!publishedOnly || isPublished(item)));
   if (!product) throw new NotFoundError('Product', id);
   return product;
 }
@@ -100,14 +102,15 @@ export async function createProduct(input) {
     image: input.image || '/assets/product-basketball-hoop-853.jpg',
     gallery: input.gallery?.length ? input.gallery : [input.image || '/assets/product-basketball-hoop-853.jpg'],
     summary: input.summary,
-    features: input.features?.length ? input.features : ['Amazon listing source', 'Retail catalog ready', 'Inventory tracked in FREG Operations'],
+    features: input.features?.length ? input.features : ['Amazon listing source', 'Retail catalog ready'],
     specs: input.specs || { type: 'Sports equipment', source: 'Amazon listing URL' },
     stock: input.stock,
     status: input.status || 'active',
-    company: input.company || 'FREG LLC',
+    brand: input.brand || 'DASHINGNOAH',
+    company: input.company || '',
     source: input.source || 'Amazon product link supplied by user',
-    businessType: input.businessType || 'E-COMMERCE, RETAIL, WHOLESALE',
-    companyPrincipalOffice: input.companyPrincipalOffice || '26682 ALMOND AVENUE UNIT B, REDLANDS, CA 92374',
+    businessType: input.businessType || '',
+    companyPrincipalOffice: input.companyPrincipalOffice || '',
     amazonStoreUrl: input.amazonStoreUrl || null,
     sourceAsin: input.sourceAsin || null,
     createdAt: new Date().toISOString()
