@@ -1,18 +1,19 @@
 <script setup>
-import { computed, nextTick, onMounted, reactive, ref } from 'vue';
-import { Dumbbell, Footprints, Heart, Menu, Ruler, Search, ShoppingBag, SlidersHorizontal, Star, Truck, X } from 'lucide-vue-next';
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
+import { ArrowRight, ArrowUpRight, Layers, Menu, Ruler, Search, ShoppingBag, SlidersHorizontal, Star, Truck, X } from 'lucide-vue-next';
 import { catalogOnly, storeApi } from './lib/api.js';
+import { amazonProductUrl, hasPrice, money } from './lib/products.js';
+import ProductCard from './components/ProductCard.vue';
 import SiteFooter from './SiteFooter.vue';
 
-const amazonStoreUrl = 'https://www.amazon.com/stores/DASHINGNOAH/page/EA8BE3A0-3BA6-4DA7-98B7-C1D6F0147970';
-
-function amazonProductUrl(product) {
-  return /^https:\/\/(www\.)?amazon\.com\//i.test(product.amazonStoreUrl) ? product.amazonStoreUrl : amazonStoreUrl;
-}
+const amazonStoreUrl = 'https://www.amazon.com/stores/AlaterreFurniture/page/82789116-98E2-4456-94B8-8EE675121760';
 
 const loading = ref(true);
 const error = ref('');
 const products = ref([]);
+const catalogProducts = ref([]);
+const department = ref('all');
+const activeImage = ref('');
 const productResults = ref(null);
 let latestProductRequest = 0;
 const facets = ref({ categories: [], collections: [], colors: [], priceRange: { min: 0, max: 1200 } });
@@ -30,20 +31,47 @@ const paypalLoading = ref(false);
 const paymentError = ref('');
 const deliveryConfirmed = ref(false);
 
-const filters = reactive({ q: '', category: '', collection: '', color: '', maxPrice: '', sort: 'popular' });
+const filters = reactive({ q: '', category: '', collection: '', color: '', maxPrice: '', sort: 'featured' });
 const checkout = reactive({ name: '', email: '', address: '', city: '', state: '', zip: '' });
 
 const wishlistIds = computed(() => new Set(wishlist.value.products.map((item) => item.id)));
 const cartCount = computed(() => cart.value.items.reduce((sum, item) => sum + item.quantity, 0));
+const furnitureProducts = computed(() => catalogProducts.value.filter((item) => item.brand === 'Alaterre Furniture'));
+const featuredIds = ['alaterre-pomona-coffee-table', 'alaterre-alpine-bench', 'alaterre-shaker-storage-bench', 'alaterre-shaker-bookcase'];
+const featuredFurniture = computed(() => featuredIds.map((id) => furnitureProducts.value.find((item) => item.id === id)).filter(Boolean));
+const visibleProducts = computed(() => products.value.filter((item) => {
+  if (department.value === 'all') return true;
+  if (department.value === 'furniture') return item.brand === 'Alaterre Furniture';
+  if (department.value === 'sports') return item.brand === 'DASHINGNOAH';
+  return item.rooms?.includes(department.value);
+}));
+const departments = [
+  { value: 'all', label: 'All Products' },
+  { value: 'furniture', label: 'Furniture' },
+  { value: 'sports', label: 'Sports & Fitness' }
+];
+const rooms = [
+  { name: 'Living Room', image: '/assets/alaterre-pomona-coffee-room.jpg', caption: 'Tables to gather around' },
+  { name: 'Entryway', image: '/assets/alaterre-pomona-console.jpg', caption: 'A welcoming first impression' },
+  { name: 'Home Office', image: '/assets/alaterre-shaker-bookcase.jpg', caption: 'Make room for your ideas' },
+  { name: 'Dining Room', image: '/assets/alaterre-pomona-stool.jpg', caption: 'Pull up a seat' }
+];
 
-function money(value) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: value % 1 ? 2 : 0 }).format(value || 0);
+watch(selectedProduct, (product) => { activeImage.value = product?.image || ''; });
+
+async function browse(value = 'all') {
+  department.value = value;
+  navOpen.value = false;
+  Object.assign(filters, { q: '', category: '', collection: '', color: '', maxPrice: '', sort: 'featured' });
+  await loadProducts();
+  await nextTick();
+  document.getElementById('shop').scrollIntoView({ block: 'start' });
 }
 
-function swatchStyle(color) {
-  const name = color.trim().toLowerCase();
-  const value = name === 'charcoal' ? '#36454f' : name;
-  return CSS.supports('color', value) ? { backgroundColor: value } : { display: 'none' };
+function resetFilters() {
+  department.value = 'all';
+  Object.assign(filters, { q: '', category: '', collection: '', color: '', maxPrice: '', sort: 'featured' });
+  loadProducts();
 }
 
 async function loadProducts() {
@@ -54,6 +82,9 @@ async function loadProducts() {
     const data = await storeApi.products(filters);
     if (request !== latestProductRequest) return;
     products.value = data.products;
+    if (!filters.q && !filters.category && !filters.collection && !filters.color && !filters.maxPrice) {
+      catalogProducts.value = data.products;
+    }
     facets.value = data.facets;
   } catch (err) {
     if (request === latestProductRequest) error.value = err.message || 'Unable to load products.';
@@ -183,19 +214,19 @@ onMounted(boot);
   <div class="site-shell">
     <div class="topbar">
       <a :href="amazonStoreUrl">Amazon Store</a>
-      <span><Truck :size="15" /> {{ catalogOnly ? 'Check delivery options on each Amazon listing.' : 'Free delivery on sports and fitness equipment orders.' }}</span>
+      <span>Introducing Alaterre Furniture. A little more home, every day.</span>
       <a href="#service">Customer Service</a>
     </div>
 
     <header class="site-header">
       <button class="icon-button mobile-only" aria-label="Open navigation" @click="navOpen = true"><Menu :size="21" /></button>
-      <a class="brand" href="#home" aria-label="DASHINGNOAH home"><span>DASHINGNOAH</span></a>
+      <a class="brand" href="#home" aria-label="DASHINGNOAH home"><span>DASHINGNOAH</span><small>HOME & LIVING</small></a>
       <nav class="desktop-nav" aria-label="Primary navigation">
-        <a href="#shop">Basketball</a>
-        <a href="#shop">Fitness</a>
-        <a href="#shop">Strength</a>
-        <a href="#collections">Collections</a>
-        <a href="#materials">Equipment Guide</a>
+        <a href="#shop" @click.prevent="browse('furniture')">Furniture</a>
+        <a href="#shop" @click.prevent="browse('Living Room')">Living Room</a>
+        <a href="#shop" @click.prevent="browse('Entryway')">Entryway</a>
+        <a href="#shop" @click.prevent="browse('Home Office')">Home Office</a>
+        <a href="#shop" @click.prevent="browse('sports')">Sports & Fitness</a>
       </nav>
       <div class="header-actions">
         <form class="search-field" role="search" @submit.prevent="showSearchResults">
@@ -212,69 +243,62 @@ onMounted(boot);
     <aside class="mobile-menu" :class="{ open: navOpen }" :inert="!navOpen">
       <button class="icon-button close" aria-label="Close navigation" @click="navOpen = false"><X :size="20" /></button>
       <a href="#shop" @click="navOpen = false">Shop All</a>
-      <a href="#collections" @click="navOpen = false">Collections</a>
-      <a href="#materials" @click="navOpen = false">Equipment Guide</a>
+      <a href="#shop" @click.prevent="browse('furniture')">Furniture</a>
+      <a v-for="room in rooms" :key="room.name" href="#shop" @click.prevent="browse(room.name)">{{ room.name }}</a>
+      <a href="#shop" @click.prevent="browse('sports')">Sports & Fitness</a>
       <a :href="amazonStoreUrl" @click="navOpen = false">Amazon Store</a>
     </aside>
 
     <main id="home">
-      <section class="hero">
-        <img class="hero-bg" src="/assets/product-weight-bench.jpg" alt="DASHINGNOAH foldable weight bench set in use" />
+      <section class="hero home-hero">
+        <img class="hero-bg" src="/assets/alaterre-pomona-coffee-room.jpg" alt="Alaterre Pomona wood coffee table with a storage shelf in a light-filled living room" fetchpriority="high" />
         <div class="hero-copy">
-          <p class="eyebrow">DASHINGNOAH home fitness</p>
-          <h1>Gear Up Your Game</h1>
-          <a class="button primary" href="#shop">Shop Best Sellers</a>
+          <p class="eyebrow">New collection / Alaterre Furniture</p>
+          <h1>Furniture for<br />Everyday Living.</h1>
+          <p class="hero-description">Natural textures. Thoughtful storage.<br />Pieces that make a house feel like home.</p>
+          <a class="button primary" href="#shop" @click.prevent="browse('furniture')">Explore Furniture <ArrowRight :size="17" /></a>
+          <a class="hero-secondary" href="#shop" @click.prevent="browse('sports')">Shop Sports & Fitness <ArrowRight :size="16" /></a>
         </div>
+        <button class="hero-product" :disabled="!furnitureProducts.length" @click="selectedProduct = furnitureProducts.find((item) => item.id === 'alaterre-pomona-coffee-table')"><span>IN THE ROOM<strong>Pomona Coffee Table</strong></span><ArrowUpRight :size="22" /></button>
       </section>
 
-      <section class="promo-split">
-        <article>
-          <img src="/assets/promo-basketball.jpg" alt="DASHINGNOAH adjustable basketball hoop height configurations" />
-          <div>
-            <p class="eyebrow">Basketball hoops</p>
-            <h2>Turn your driveway into a practice court.</h2>
-            <p>Adjust the rim height for younger players, then raise it as their reach grows.</p>
-            <a class="button secondary" href="#shop">Shop Now</a>
-          </div>
-        </article>
-        <article>
-          <img src="/assets/promo-treadmill.jpg" alt="DASHINGNOAH portable treadmill with incline" />
-          <div>
-            <p class="eyebrow">Ready for training</p>
-            <h2>Compact gear for everyday movement.</h2>
-            <p>A portable treadmill gives you room to walk or run at home and stores away after your workout.</p>
-            <a class="button secondary" href="#shop">Shop Best Sellers</a>
-          </div>
-        </article>
-      </section>
-
-      <section class="difference-strip" id="materials">
-        <h2>Choose equipment for your space</h2>
-        <div>
-          <article><Ruler :size="28" /><strong>Basketball hoops</strong><span>Check the rim height range against the height you want for practice.</span></article>
-          <article><Footprints :size="28" /><strong>Treadmills</strong><span>Compare the deck size and weight capacity with your workout needs.</span></article>
-          <article><Dumbbell :size="28" /><strong>Weight benches</strong><span>Check which attachments come with the bench and where it will fit when folded.</span></article>
-        </div>
-      </section>
+      <div class="collection-note"><span><Layers :size="18" /> Alaterre Furniture</span><span>Pomona · Alpine · Shaker Cottage · Coventry</span><a href="#new-arrivals">Discover the collection <ArrowRight :size="16" /></a></div>
 
       <section class="section" id="collections">
         <div class="section-heading">
-          <p class="eyebrow">Shop by category</p>
-          <h2>Sports and fitness equipment for the way you move.</h2>
+          <div><p class="eyebrow">Find your space</p><h2>Shop by Room</h2></div>
+          <a class="text-link" href="#shop" @click.prevent="browse('furniture')">View all furniture <ArrowRight :size="17" /></a>
         </div>
         <div class="collection-grid">
-          <button v-for="category in facets.categories" :key="category" class="collection-tile" @click="filters.category = category; loadProducts()">
-            <span>{{ category }}</span>
-            <small>View all</small>
+          <button v-for="room in rooms" :key="room.name" class="collection-tile" @click="browse(room.name)">
+            <div class="room-image"><img :src="room.image" :alt="`${room.name} furniture by Alaterre`" loading="lazy" width="600" height="450" /></div>
+            <span>{{ room.name }} <ArrowUpRight :size="19" /></span>
+            <small>{{ room.caption }}</small>
           </button>
         </div>
       </section>
 
+      <section class="section new-arrivals" id="new-arrivals">
+        <div class="section-heading"><div><p class="eyebrow">Introducing Alaterre</p><h2>A Few New Favorites</h2></div><a class="text-link" href="#shop" @click.prevent="browse('furniture')">Shop all {{ furnitureProducts.length }} pieces <ArrowRight :size="17" /></a></div>
+        <div v-if="featuredFurniture.length" class="featured-grid">
+          <ProductCard v-for="product in featuredFurniture" :key="product.id" :product="product" :saved="wishlistIds.has(product.id)" :catalog-only="catalogOnly" @view="selectedProduct = $event" @save="toggleWish" @add="add" />
+        </div>
+        <div v-else-if="loading" class="featured-grid"><div v-for="i in 4" :key="i" class="skeleton-card"></div></div>
+        <div v-else class="state-panel">{{ error || 'The collection is currently unavailable.' }} <button class="button" @click="loadProducts">Try Again</button></div>
+      </section>
+
+      <section class="promo-split home-edits">
+        <article><img src="/assets/alaterre-shaker-storage.jpg" alt="Alaterre Shaker Cottage ivory storage bench with cabinet doors" loading="lazy" /><div><p class="eyebrow">The entryway edit</p><h2>A Warm Welcome.</h2><p>Benches, consoles, and clever storage for the place where every day begins.</p><a class="text-link" href="#shop" @click.prevent="browse('Entryway')">Explore entryway <ArrowRight :size="17" /></a></div></article>
+        <article><img src="/assets/promo-treadmill.jpg" alt="DASHINGNOAH portable treadmill with incline" loading="lazy" /><div><p class="eyebrow">Still part of the family</p><h2>Room to Move.</h2><p>Our original DASHINGNOAH sports and fitness collection, made for your at-home routine.</p><a class="text-link" href="#shop" @click.prevent="browse('sports')">Shop Sports & Fitness <ArrowRight :size="17" /></a></div></article>
+      </section>
+
       <section class="shop-section" id="shop">
         <div class="shop-heading">
-          <h2>Shop DASHINGNOAH equipment</h2>
-          <button class="button ghost" @click="filters.category=''; filters.collection=''; filters.color=''; filters.maxPrice=''; filters.q=''; loadProducts()">Clear filters</button>
+          <div><p class="eyebrow">Furniture, fitness & everyday essentials</p><h2>Explore the Collection</h2></div>
+          <button class="text-link" @click="resetFilters">Clear filters <X :size="16" /></button>
         </div>
+
+        <div class="catalog-toolbar"><div class="department-tabs" role="group" aria-label="Product department"><button v-for="item in departments" :key="item.value" :class="{ active: department === item.value }" :aria-pressed="department === item.value" @click="browse(item.value)">{{ item.label }}</button><button v-if="rooms.some((room) => room.name === department)" class="active" aria-pressed="true" @click="browse(department)">{{ department }}</button></div><span aria-live="polite">{{ loading ? 'Loading...' : `${visibleProducts.length} products` }}</span></div>
 
         <div class="shop-layout">
           <aside class="filters" aria-label="Product filters">
@@ -297,12 +321,13 @@ onMounted(boot);
                 <option v-for="item in facets.colors" :key="item">{{ item }}</option>
               </select>
             </label>
-            <label>Max price
+            <label>Max listed price
               <input v-model="filters.maxPrice" type="range" :min="facets.priceRange.min" :max="facets.priceRange.max" @input="loadProducts" />
               <span>{{ filters.maxPrice ? money(filters.maxPrice) : 'No limit' }}</span>
             </label>
             <label>Sort
               <select v-model="filters.sort" @change="loadProducts">
+                <option value="featured">Featured</option>
                 <option value="popular">Most reviewed</option>
                 <option value="rating">Top rated</option>
                 <option value="price-asc">Price low to high</option>
@@ -313,47 +338,36 @@ onMounted(boot);
 
           <div id="product-results" ref="productResults" class="product-area" role="region" aria-label="Product results" tabindex="-1">
             <div v-if="loading" class="product-grid"><div v-for="i in 6" :key="i" class="skeleton-card"></div></div>
-            <div v-else-if="error" class="state-panel">{{ error }}</div>
-            <div v-else-if="!products.length" class="state-panel">No products match those filters.</div>
+            <div v-else-if="error" class="state-panel">{{ error }} <button class="button" @click="loadProducts">Try Again</button></div>
+            <div v-else-if="!visibleProducts.length" class="state-panel">No products match those filters. <button class="button" @click="resetFilters">Clear filters</button></div>
             <div v-else class="product-grid">
-              <article v-for="product in products" :key="product.id" class="product-card">
-                <button v-if="!catalogOnly" class="wish" :class="{ active: wishlistIds.has(product.id) }" :aria-label="`Save ${product.name}`" @click="toggleWish(product)"><Heart :size="18" /></button>
-                <button class="image-button" @click="selectedProduct = product"><img :src="product.image" :alt="product.name" /></button>
-                <div class="product-meta">
-                  <span class="badge">{{ product.badge }}</span>
-                  <button class="product-name" @click="selectedProduct = product">{{ product.name }}</button>
-                  <div class="rating"><Star :size="15" fill="currentColor" /> {{ product.rating }} <span>({{ product.reviewCount }})</span></div>
-                  <div class="price-row"><strong>{{ money(product.price) }}</strong><del>{{ money(product.compareAt) }}</del></div>
-                  <div class="swatches">
-                    <span v-for="color in product.colors.slice(0, 4)" :key="color">
-                      <i aria-hidden="true" :style="swatchStyle(color)"></i>{{ color }}
-                    </span>
-                  </div>
-                  <a v-if="catalogOnly" class="button full" :href="amazonProductUrl(product)">View on Amazon</a>
-                  <button v-else class="button full" @click="add(product)">Add to Cart</button>
-                </div>
-              </article>
+              <ProductCard v-for="product in visibleProducts" :key="product.id" :product="product" :saved="wishlistIds.has(product.id)" :catalog-only="catalogOnly" @view="selectedProduct = $event" @save="toggleWish" @add="add" />
             </div>
           </div>
         </div>
       </section>
+
+      <section class="difference-strip" id="materials"><div><article><Ruler :size="25" /><strong>A Place for Every Piece</strong><span>Explore dimensions and materials to find the right fit for your room.</span></article><article><Layers :size="25" /><strong>Collections That Belong Together</strong><span>Mix matching wood finishes, clean lines, and practical storage.</span></article><article><Truck :size="25" /><strong>Delivery That Fits Your Plans</strong><span>Check the Amazon listing for current pricing, availability, and delivery options.</span></article></div></section>
     </main>
 
     <SiteFooter />
 
-    <aside class="drawer" :class="{ open: !!selectedProduct }" aria-live="polite">
+    <aside class="drawer" :class="{ open: !!selectedProduct }" :inert="!selectedProduct" aria-live="polite">
       <button class="icon-button close" aria-label="Close product details" @click="selectedProduct = null"><X :size="20" /></button>
       <template v-if="selectedProduct">
-        <img class="drawer-product-image" :src="selectedProduct.image" :alt="selectedProduct.name" />
+        <img class="drawer-product-image" :src="activeImage" :alt="selectedProduct.name" />
+        <div v-if="selectedProduct.gallery?.length > 1" class="gallery-thumbnails" role="group" aria-label="Product photos"><button v-for="(src, index) in selectedProduct.gallery" :key="src" :aria-label="`Product photo ${index + 1}`" :aria-pressed="activeImage === src" @click="activeImage = src"><img :src="src" :alt="`${selectedProduct.name}, view ${index + 1}`" /></button></div>
+        <span class="product-brand">{{ selectedProduct.brand }}</span>
         <span class="badge">{{ selectedProduct.badge }}</span>
         <h2>{{ selectedProduct.name }}</h2>
-        <div class="rating"><Star :size="15" fill="currentColor" /> {{ selectedProduct.rating }} <span>({{ selectedProduct.reviewCount }} reviews)</span></div>
+        <div v-if="selectedProduct.rating && selectedProduct.reviewCount" class="rating"><Star :size="15" fill="currentColor" /> {{ selectedProduct.rating }} <span>({{ selectedProduct.reviewCount }} reviews)</span></div>
         <p>{{ selectedProduct.summary }}</p>
-        <div class="price-row large"><strong>{{ money(selectedProduct.price) }}</strong><del>{{ money(selectedProduct.compareAt) }}</del></div>
+        <div v-if="hasPrice(selectedProduct)" class="price-row large"><strong>{{ money(selectedProduct.price) }}</strong><del v-if="selectedProduct.compareAt > selectedProduct.price">{{ money(selectedProduct.compareAt) }}</del></div>
+        <p v-else class="price-note">See current price and availability on Amazon.</p>
         <div class="detail-block"><strong>Colors</strong><div class="pill-row"><span v-for="color in selectedProduct.colors" :key="color">{{ color }}</span></div></div>
         <div class="detail-block"><strong>Features</strong><ul><li v-for="feature in selectedProduct.features" :key="feature">{{ feature }}</li></ul></div>
         <div class="spec-grid"><div v-for="(value, key) in selectedProduct.specs" :key="key"><span>{{ key }}</span><strong>{{ value }}</strong></div></div>
-        <a v-if="catalogOnly" class="button primary full" :href="amazonProductUrl(selectedProduct)">View on Amazon</a>
+        <a v-if="catalogOnly || selectedProduct.externalOnly" class="button primary full" :href="amazonProductUrl(selectedProduct)" target="_blank" rel="noopener noreferrer">{{ selectedProduct.amazonLinkType === 'search' ? 'Find on Amazon' : 'View on Amazon' }} <ArrowUpRight :size="16" /></a>
         <button v-else class="button primary full" @click="add(selectedProduct)">Add to Cart</button>
       </template>
     </aside>

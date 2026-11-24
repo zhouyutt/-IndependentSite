@@ -20,6 +20,8 @@ export async function getCatalog(filters = {}, { includeInactive = false } = {})
       includesText(product.name, q) ||
       includesText(product.category, q) ||
       includesText(product.collection, q) ||
+      includesText(product.brand || '', q) ||
+      includesText(product.specs?.model || '', q) ||
       includesText(product.summary, q)
     );
   }
@@ -37,19 +39,22 @@ export async function getCatalog(filters = {}, { includeInactive = false } = {})
   }
 
   if (filters.minPrice) {
-    products = products.filter((product) => product.price >= Number(filters.minPrice));
+    products = products.filter((product) => Number.isFinite(product.price) && product.price >= Number(filters.minPrice));
   }
 
   if (filters.maxPrice) {
-    products = products.filter((product) => product.price <= Number(filters.maxPrice));
+    products = products.filter((product) => Number.isFinite(product.price) && product.price <= Number(filters.maxPrice));
   }
 
   switch (filters.sort) {
+    case 'featured':
+      products.sort((a, b) => Number(b.brand === 'Alaterre Furniture') - Number(a.brand === 'Alaterre Furniture'));
+      break;
     case 'price-asc':
-      products.sort((a, b) => a.price - b.price);
+      products.sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
       break;
     case 'price-desc':
-      products.sort((a, b) => b.price - a.price);
+      products.sort((a, b) => (b.price ?? -Infinity) - (a.price ?? -Infinity));
       break;
     case 'rating':
       products.sort((a, b) => b.rating - a.rating);
@@ -65,8 +70,8 @@ export async function getCatalog(filters = {}, { includeInactive = false } = {})
       collections: [...new Set(allProducts.map((item) => item.collection))],
       colors: [...new Set(allProducts.flatMap((item) => item.colors))],
       priceRange: {
-        min: Math.min(...allProducts.map((item) => item.price)),
-        max: Math.max(...allProducts.map((item) => item.price))
+        min: Math.min(...allProducts.filter((item) => Number.isFinite(item.price)).map((item) => item.price), 0),
+        max: Math.max(...allProducts.filter((item) => Number.isFinite(item.price)).map((item) => item.price), 0)
       }
     }
   };

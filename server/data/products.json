@@ -1,5 +1,408 @@
 [
   {
+    "id": "alaterre-pomona-coffee-table",
+    "name": "Pomona 48-inch Wood Coffee Table",
+    "brand": "Alaterre Furniture",
+    "category": "Coffee Tables",
+    "collection": "Alaterre Pomona",
+    "rooms": [
+      "Living Room"
+    ],
+    "price": null,
+    "compareAt": null,
+    "rating": null,
+    "reviewCount": 0,
+    "color": "Rustic Brown",
+    "colors": [
+      "Rustic Brown"
+    ],
+    "material": "Solid pine wood and powder-coated steel",
+    "badge": "New Collection",
+    "image": "/assets/alaterre-pomona-coffee.jpg",
+    "gallery": [
+      "/assets/alaterre-pomona-coffee.jpg",
+      "/assets/alaterre-pomona-coffee-room.jpg"
+    ],
+    "summary": "A generous solid-pine coffee table with an open lower shelf and a black steel frame. Its rustic finish brings natural wood character to the center of the living room.",
+    "features": [
+      "48-inch rectangular tabletop",
+      "Open lower shelf for books and baskets",
+      "Solid pine with a reclaimed-look finish",
+      "Powder-coated steel frame"
+    ],
+    "specs": {
+      "model": "AMBA1220",
+      "dimensions": "48 W x 32 D x 18 H in",
+      "material": "Pine wood and steel",
+      "assembly": "Required"
+    },
+    "stock": 0,
+    "status": "active",
+    "externalOnly": true,
+    "source": "Alaterre Furniture official product catalog",
+    "sourceUrl": "https://www.alaterrefurniture.com/products/pomona-occasional-furniture-coffee-table-amba1220",
+    "amazonStoreUrl": "https://www.amazon.com/s?k=Alaterre+AMBA1220",
+    "amazonLinkType": "search"
+  },
+  {
+    "id": "alaterre-pomona-end-table",
+    "name": "Pomona Wood & Metal End Table",
+    "brand": "Alaterre Furniture",
+    "category": "Side Tables",
+    "collection": "Alaterre Pomona",
+    "rooms": [
+      "Living Room",
+      "Bedroom"
+    ],
+    "price": null,
+    "compareAt": null,
+    "rating": null,
+    "reviewCount": 0,
+    "color": "Slate Gray",
+    "colors": [
+      "Slate Gray"
+    ],
+    "material": "Solid pine wood and powder-coated metal",
+    "badge": "Small Space Pick",
+    "image": "/assets/alaterre-pomona-end.jpg",
+    "gallery": [
+      "/assets/alaterre-pomona-end.jpg"
+    ],
+    "summary": "A slate-gray end table with a solid-pine top, lower display shelf, and clean metal legs. Set it beside a sofa or reading chair for a lamp, books, and everyday essentials.",
+    "features": [
+      "Two-tier open design",
+      "Solid pine construction",
+      "Slate-gray wood finish",
+      "Works beside a sofa or bed"
+    ],
+    "specs": {
+      "model": "AMBA01SG",
+      "dimensions": "27 W x 17 D x 27 H in",
+      "material": "Pine wood and metal",
+      "assembly": "Required"
+    },
+    "stock": 0,
+    "status": "active",
+    "externalOnly": true,
+    "source": "Alaterre Furniture official product catalog",
+    "sourceUrl": "https://www.alaterrefurniture.com/products/pomona-occasional-furniture-side-table-amba01sg",
+    "amazonStoreUrl": "https://www.amazon.com/s?k=Alaterre+AMBA01SG",
+    "amazonLinkType": "search"
+  },
+  {
+    "id": "alaterre-pomona-console-table",
+    "name": "Pomona 48-inch Console Table",
+    "brand": "Alaterre Furniture",
+    "category": "Console Tables",
+    "collection": "Alaterre Pomona",
+    "rooms": [
+      "Entryway",
+      "Living Room"
+    ],
+    "price": null,
+    "compareAt": null,
+    "rating": null,
+    "reviewCount": 0,
+    "color": "Rustic Brown",
+    "colors": [
+      "Rustic Brown"
+    ],
+    "material": "Solid pine wood and powder-coated steel",
+    "badge": "Entryway Edit",
+    "image": "/assets/alaterre-pomona-console.jpg",
+    "gallery": [
+      "/assets/alaterre-pomona-console.jpg"
+    ],
+    "summary": "Give a hallway or living room a practical focal point. This slim console combines a wide wood top with two open shelves for baskets, books, and display pieces.",
+    "features": [
+      "48-inch-wide console",
+      "Two open lower shelves",
+      "Natural wood grain and black metal legs",
+      "Versatile hallway or media-room placement"
+    ],
+    "specs": {
+      "model": "AMBA1020",
+      "dimensions": "48 W x 16 D x 30 H in",
+      "material": "Pine wood and steel",
+      "assembly": "Required"
+    },
+    "stock": 0,
+    "status": "active",
+    "externalOnly": true,
+    "source": "Alaterre Furniture official product catalog",
+    "sourceUrl": "https://www.alaterrefurniture.com/products/pomona-occasional-furniture-console-table-amba1020",
+    "amazonStoreUrl": "https://www.amazon.com/s?k=Alaterre+AMBA1020",
+    "amazonLinkType": "search"
+  },
+  {
+    "id": "alaterre-alpine-bench",
+    "name": "Alpine 48-inch Live Edge Bench",
+    "brand": "Alaterre Furniture",
+    "category": "Benches",
+    "collection": "Alaterre Alpine",
+    "rooms": [
+      "Entryway",
+      "Dining Room"
+    ],
+    "price": null,
+    "compareAt": null,
+    "rating": null,
+    "reviewCount": 0,
+    "color": "Natural",
+    "colors": [
+      "Natural"
+    ],
+    "material": "Solid acacia wood and metal",
+    "badge": "Natural Wood",
+    "image": "/assets/alaterre-alpine-bench.jpg",
+    "gallery": [
+      "/assets/alaterre-alpine-bench.jpg"
+    ],
+    "summary": "A solid-acacia bench with a live edge and sculptural metal strap legs. Natural grain, knots, and curves make each seat distinct, whether placed in an entryway or at a dining table.",
+    "features": [
+      "Natural live-edge acacia seat",
+      "Black metal strap legs",
+      "Nylon floor protectors",
+      "Individual grain and edge variation"
+    ],
+    "specs": {
+      "model": "AWAA0420",
+      "dimensions": "48 W x 14 D x 18 H in",
+      "material": "Acacia wood and metal",
+      "assembly": "Required"
+    },
+    "stock": 0,
+    "status": "active",
+    "externalOnly": true,
+    "source": "Alaterre Furniture official product catalog",
+    "sourceUrl": "https://www.alaterrefurniture.com/products/alpine-dining-furniture-dining-bench-awaa0420",
+    "amazonStoreUrl": "https://www.amazon.com/s?k=Alaterre+AWAA0420",
+    "amazonLinkType": "search"
+  },
+  {
+    "id": "alaterre-shaker-bookcase",
+    "name": "Shaker Cottage 48-inch Bookcase",
+    "brand": "Alaterre Furniture",
+    "category": "Bookcases",
+    "collection": "Alaterre Shaker Cottage",
+    "rooms": [
+      "Home Office",
+      "Living Room"
+    ],
+    "price": null,
+    "compareAt": null,
+    "rating": null,
+    "reviewCount": 0,
+    "color": "Espresso",
+    "colors": [
+      "Espresso"
+    ],
+    "material": "Solid birch and MDF",
+    "badge": "Storage Edit",
+    "image": "/assets/alaterre-shaker-bookcase.jpg",
+    "gallery": [
+      "/assets/alaterre-shaker-bookcase.jpg"
+    ],
+    "summary": "Cottage-style shelving for books, baskets, and collected objects. A compact footprint, paneled sides, and a rich espresso finish make it easy to place in a home office or living room.",
+    "features": [
+      "Open shelving for books and decor",
+      "Compact 24-inch width",
+      "Detailed side panels and tapered legs",
+      "Espresso finish"
+    ],
+    "specs": {
+      "model": "ASCA08P0",
+      "dimensions": "24 W x 14 D x 48 H in",
+      "material": "Birch and MDF",
+      "assembly": "Required"
+    },
+    "stock": 0,
+    "status": "active",
+    "externalOnly": true,
+    "source": "Alaterre Furniture official product catalog",
+    "sourceUrl": "https://www.alaterrefurniture.com/products/shaker-cottage-office-furniture-bookcase-asca08p0",
+    "amazonStoreUrl": "https://www.amazon.com/s?k=Alaterre+ASCA08P0",
+    "amazonLinkType": "search"
+  },
+  {
+    "id": "alaterre-shaker-storage-bench",
+    "name": "Shaker Cottage Storage Bench",
+    "brand": "Alaterre Furniture",
+    "category": "Storage Furniture",
+    "collection": "Alaterre Shaker Cottage",
+    "rooms": [
+      "Entryway",
+      "Bedroom"
+    ],
+    "price": null,
+    "compareAt": null,
+    "rating": null,
+    "reviewCount": 0,
+    "color": "Ivory",
+    "colors": [
+      "Ivory"
+    ],
+    "material": "Birch and composite wood",
+    "badge": "Hidden Storage",
+    "image": "/assets/alaterre-shaker-storage.jpg",
+    "gallery": [
+      "/assets/alaterre-shaker-storage.jpg"
+    ],
+    "summary": "A welcoming spot to sit with everyday clutter neatly behind closed doors. The ivory Shaker-style bench offers two cabinet compartments and a removable shelf for flexible entryway storage.",
+    "features": [
+      "Two-door concealed storage",
+      "Removable interior shelf",
+      "Magnetic door catches",
+      "Compact 36-inch-wide seat"
+    ],
+    "specs": {
+      "model": "ASCA05IV",
+      "dimensions": "36 W x 16 D x 20 H in",
+      "material": "Birch and composite wood",
+      "assembly": "Required"
+    },
+    "stock": 0,
+    "status": "active",
+    "externalOnly": true,
+    "source": "Alaterre Furniture official product catalog",
+    "sourceUrl": "https://www.alaterrefurniture.com/products/shaker-cottage-dining-furniture-dining-bench-asca05iv",
+    "amazonStoreUrl": "https://www.amazon.com/s?k=Alaterre+ASCA05IV",
+    "amazonLinkType": "search"
+  },
+  {
+    "id": "alaterre-pomona-wall-shelf",
+    "name": "Pomona 36-inch Wood Wall Shelf",
+    "brand": "Alaterre Furniture",
+    "category": "Wall Shelves",
+    "collection": "Alaterre Pomona",
+    "rooms": [
+      "Home Office",
+      "Living Room"
+    ],
+    "price": null,
+    "compareAt": null,
+    "rating": null,
+    "reviewCount": 0,
+    "color": "Rustic Brown",
+    "colors": [
+      "Rustic Brown"
+    ],
+    "material": "Solid pine wood and metal",
+    "badge": "Storage Edit",
+    "image": "/assets/alaterre-pomona-shelf.jpg",
+    "gallery": [
+      "/assets/alaterre-pomona-shelf.jpg"
+    ],
+    "summary": "Bring display space to an unused wall with rustic pine shelves and a dark metal frame. A slim profile makes room for books, plants, and small objects without taking up floor space.",
+    "features": [
+      "Wall-mounted display shelves",
+      "Solid pine with natural variation",
+      "Metal supports",
+      "10-inch-deep shelves"
+    ],
+    "specs": {
+      "model": "AMBA5520",
+      "dimensions": "20 W x 10 D x 36 H in",
+      "material": "Pine wood and metal",
+      "assembly": "Required"
+    },
+    "stock": 0,
+    "status": "active",
+    "externalOnly": true,
+    "source": "Alaterre Furniture official product catalog",
+    "sourceUrl": "https://www.alaterrefurniture.com/products/pomona-occasional-furniture-wall-shelf-amba5520",
+    "amazonStoreUrl": "https://www.amazon.com/s?k=Alaterre+AMBA5520",
+    "amazonLinkType": "search"
+  },
+  {
+    "id": "alaterre-pomona-counter-stool",
+    "name": "Pomona 26-inch Counter Stool",
+    "brand": "Alaterre Furniture",
+    "category": "Counter Stools",
+    "collection": "Alaterre Pomona",
+    "rooms": [
+      "Dining Room"
+    ],
+    "price": null,
+    "compareAt": null,
+    "rating": null,
+    "reviewCount": 0,
+    "color": "Rustic Brown",
+    "colors": [
+      "Rustic Brown"
+    ],
+    "material": "Solid pine wood",
+    "badge": "Kitchen & Dining",
+    "image": "/assets/alaterre-pomona-stool.jpg",
+    "gallery": [
+      "/assets/alaterre-pomona-stool.jpg"
+    ],
+    "summary": "A simple, solid-pine counter stool with a shaped saddle seat. Its rustic finish and compact form work naturally at a kitchen island or counter-height dining table.",
+    "features": [
+      "26-inch counter-height seat",
+      "Contoured saddle seat",
+      "Solid pine seat and legs",
+      "Natural wood grain variation"
+    ],
+    "specs": {
+      "model": "AMBA2120",
+      "dimensions": "19 W x 14 D x 26 H in",
+      "material": "Solid pine",
+      "assembly": "Required"
+    },
+    "stock": 0,
+    "status": "active",
+    "externalOnly": true,
+    "source": "Alaterre Furniture official product catalog",
+    "sourceUrl": "https://www.alaterrefurniture.com/products/pomona-dining-furniture-barstool-amba2120",
+    "amazonStoreUrl": "https://www.amazon.com/s?k=Alaterre+AMBA2120",
+    "amazonLinkType": "search"
+  },
+  {
+    "id": "alaterre-coventry-coffee-table",
+    "name": "Coventry 36-inch Coffee Table",
+    "brand": "Alaterre Furniture",
+    "category": "Coffee Tables",
+    "collection": "Alaterre Coventry",
+    "rooms": [
+      "Living Room"
+    ],
+    "price": null,
+    "compareAt": null,
+    "rating": null,
+    "reviewCount": 0,
+    "color": "White",
+    "colors": [
+      "White"
+    ],
+    "material": "Wood",
+    "badge": "Cottage Style",
+    "image": "/assets/alaterre-coventry-coffee.jpg",
+    "gallery": [
+      "/assets/alaterre-coventry-coffee.jpg"
+    ],
+    "summary": "An airy coffee table with open geometric side panels and a broad lower shelf. The clean white finish and compact proportions suit cottage, coastal, and everyday living spaces.",
+    "features": [
+      "36-inch-wide tabletop",
+      "Open geometric side panels",
+      "Full-width lower storage shelf",
+      "Clean white finish"
+    ],
+    "specs": {
+      "model": "ANCT14WH",
+      "dimensions": "36 W x 22 D x 18 H in",
+      "material": "Wood",
+      "assembly": "Required"
+    },
+    "stock": 0,
+    "status": "active",
+    "externalOnly": true,
+    "source": "Alaterre Furniture official product catalog",
+    "sourceUrl": "https://www.alaterrefurniture.com/products/coventry-occasional-furniture-coffee-table-anct14wh",
+    "amazonStoreUrl": "https://www.amazon.com/s?k=Alaterre+ANCT14WH",
+    "amazonLinkType": "search"
+  },
+  {
     "id": "dn-weight-bench-set",
     "name": "DASHINGNOAH 6-in-1 Foldable Weight Bench Set",
     "category": "Strength Training",

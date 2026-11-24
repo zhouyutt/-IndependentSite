@@ -28,6 +28,30 @@ test('catalog returns products and facets', async () => {
   assert.equal(res.body.products[0].source, 'Amazon product link supplied by user');
 });
 
+test('furniture catalog has nine sourced products and searchable model numbers', async () => {
+  const res = await api.get('/api/products?sort=featured').expect(200);
+  const furniture = res.body.products.filter((product) => product.brand === 'Alaterre Furniture');
+  assert.equal(furniture.length, 9);
+  assert.equal(res.body.products[0].brand, 'Alaterre Furniture');
+  for (const product of furniture) {
+    assert.equal(product.price, null);
+    assert.equal(product.rating, null);
+    assert.equal(product.externalOnly, true);
+    assert.match(product.image, /^\/assets\/alaterre-/);
+    assert.match(product.sourceUrl, /^https:\/\/www.alaterrefurniture.com\/products\//);
+    assert.ok(product.amazonStoreUrl.includes(product.specs.model));
+  }
+  const search = await api.get('/api/products?q=AMBA5520').expect(200);
+  assert.equal(search.body.products.length, 1);
+  assert.equal(search.body.products[0].id, 'alaterre-pomona-wall-shelf');
+  const priced = await api.get('/api/products?maxPrice=250').expect(200);
+  assert.ok(priced.body.products.every((product) => Number.isFinite(product.price) && product.price <= 250));
+  const sorted = await api.get('/api/products?sort=price-asc').expect(200);
+  assert.ok(sorted.body.products.slice(0, 4).every((product) => Number.isFinite(product.price)));
+  await api.post('/api/cart/items').set('x-session-id', 'furniture-validation')
+    .send({ productId: furniture[0].id, quantity: 1 }).expect(422);
+});
+
 test('catalog-only deployment serves products and omits shopping and administration routes', async () => {
   const catalog = request(createApp({ catalogOnly: true }));
   await catalog.get('/api/products').expect(200);

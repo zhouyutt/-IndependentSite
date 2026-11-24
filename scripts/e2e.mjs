@@ -65,7 +65,7 @@ try {
   });
 
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' });
-  await page.getByRole('heading', { name: /Gear Up Your Game/i }).waitFor({ timeout: 8000 });
+  await page.getByRole('heading', { name: /Furniture for Everyday Living/i }).waitFor({ timeout: 8000 });
   step('home hero rendered');
 
   const promoImages = page.locator('.promo-split img');
@@ -85,23 +85,50 @@ try {
   await assertFitsViewportWidth(page.getByRole('button', { name: 'Open cart' }), 'Cart should fit in the tablet header');
   await page.setViewportSize({ width: 1440, height: 1100 });
 
-  await page.getByRole('link', { name: /Shop Best Sellers/i }).first().click();
-  await page.locator('.product-card').first().waitFor({ timeout: 8000 });
-  const initialCards = await page.locator('.product-card').count();
-  if (initialCards < 4) throw new Error(`expected product cards, got ${initialCards}`);
+  await page.getByRole('link', { name: 'Explore Furniture', exact: true }).click();
+  await page.waitForFunction(() => document.querySelectorAll('#product-results .product-card').length === 9);
+  const initialCards = await page.locator('#product-results .product-card').count();
+  assert.equal(initialCards, 9);
+  assert.equal(await page.locator('.featured-grid .product-card').count(), 4);
   step(`product grid rendered (${initialCards} cards)`);
+
+  const coffeeCard = page.locator('#product-results [data-product-id="alaterre-pomona-coffee-table"]');
+  await coffeeCard.getByRole('button', { name: 'Pomona 48-inch Wood Coffee Table', exact: true }).click();
+  await page.locator('.drawer.open').getByRole('heading', { name: 'Pomona 48-inch Wood Coffee Table', exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Product photo 2', exact: true }).click();
+  assert.match(await page.locator('.drawer.open .drawer-product-image').getAttribute('src'), /coffee-room/);
+  assert.match(await page.locator('.drawer.open').getByRole('link', { name: 'Find on Amazon', exact: true }).getAttribute('href'), /Alaterre\+AMBA1220/);
+  assert.equal(await page.locator('.drawer.open').getByRole('button', { name: 'Add to Cart', exact: true }).count(), 0);
+  await page.getByRole('button', { name: 'Close product details' }).click();
+  step('furniture specifications, image gallery and Amazon model links work');
+
+  await page.locator('.collection-tile').filter({ hasText: 'Home Office' }).click();
+  await page.waitForFunction(() => document.querySelectorAll('#product-results .product-card').length === 2);
+  assert.match(await page.locator('#product-results').innerText(), /Bookcase/);
+  step('room navigation filters the furniture collection');
+  await page.locator('.shop-heading').getByRole('button', { name: 'Clear filters' }).click();
+  await page.waitForFunction(() => document.querySelectorAll('#product-results .product-card').length === 13);
+
+  await page.getByRole('searchbox', { name: 'Search products' }).fill('AMBA5520');
+  await page.waitForFunction(() => document.querySelectorAll('#product-results .product-card').length === 1);
+  assert.match(await page.locator('#product-results').innerText(), /Wall Shelf/);
+  await page.getByRole('searchbox', { name: 'Search products' }).fill('no-such-furniture-model');
+  await page.getByText('No products match those filters.').waitFor();
+  await page.locator('#product-results').getByRole('button', { name: 'Clear filters' }).click();
+  await page.waitForFunction(() => document.querySelectorAll('#product-results .product-card').length === 13);
+  step('model search and empty-state reset work');
 
   await page.locator('.filters select').first().selectOption({ label: 'Basketball Hoops' });
   await page.waitForTimeout(600);
-  const filteredText = await page.locator('.product-card').first().innerText();
+  const filteredText = await page.locator('#product-results .product-card').first().innerText();
   if (!/Basketball|Hoop/i.test(filteredText)) throw new Error('category filter did not update grid');
   step('category filter works');
 
-  await page.locator('.product-card .wish').first().click();
-  await page.locator('.product-card .wish.active').first().waitFor({ timeout: 5000 });
+  await page.locator('#product-results .product-card .wish').first().click();
+  await page.locator('#product-results .product-card .wish.active').first().waitFor({ timeout: 5000 });
   step('wishlist toggle works');
 
-  await page.locator('.product-card .product-name').first().click();
+  await page.locator('#product-results .product-card .product-name').first().click();
   await page.locator('.drawer.open').getByRole('heading').waitFor({ timeout: 5000 });
   step('product details drawer opens');
 
@@ -195,6 +222,10 @@ try {
 } finally {
   if (productId) {
     await fetch(`http://localhost:3001/api/admin/products/${productId}`, { method: 'DELETE' }).catch(() => {});
+  }
+  const paypalConfig = await fetch('http://localhost:3001/api/payments/paypal/config').then((res) => res.json()).catch(() => null);
+  if (paypalConfig?.clientId === 'mock-paypal-client-id') {
+    await fetch('http://localhost:3001/api/admin/payments/paypal/account', { method: 'DELETE' }).catch(() => {});
   }
   await browser.close();
 }
