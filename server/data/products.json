@@ -1,0 +1,173 @@
+[
+  {
+    "id": "dn-weight-bench-set",
+    "name": "DASHINGNOAH 6-in-1 Foldable Weight Bench Set",
+    "category": "Strength Training",
+    "collection": "DASHINGNOAH Fitness Equipment",
+    "price": 219,
+    "compareAt": 289,
+    "rating": 4.7,
+    "reviewCount": 142,
+    "color": "Black",
+    "colors": [
+      "Black",
+      "Gray"
+    ],
+    "material": "Heavy-duty steel frame with padded adjustable bench",
+    "badge": "Best Seller",
+    "image": "/assets/product-weight-bench.jpg",
+    "gallery": [
+      "/assets/product-weight-bench.jpg",
+      "/assets/hero-weight-bench.jpg"
+    ],
+    "summary": "A 6-in-1 foldable home gym bench set with an adjustable workout bench, squat rack, preacher curl station, leg developer, and push-pull training attachments.",
+    "features": [
+      "6-in-1 strength training configuration",
+      "Foldable adjustable workout bench",
+      "Integrated squat and bench press rack",
+      "Preacher curl and leg developer attachments"
+    ],
+    "specs": {
+      "asin": "B0D7PYYZW7",
+      "capacity": "2093 lb listed capacity",
+      "type": "Foldable weight bench set",
+      "source": "Amazon listing URL"
+    },
+    "stock": 36,
+    "source": "Amazon product link supplied by user",
+    "amazonStoreUrl": "https://www.amazon.com/DASHINGNOAH-Foldable-Push-Pull-Adjustable-Equipment/dp/B0D7PYYZW7?ref_=ast_sto_dp",
+    "sourceAsin": "B0D7PYYZW7",
+    "status": "active",
+    "company": "FREG LLC",
+    "businessType": "E-COMMERCE, RETAIL, WHOLESALE",
+    "companyPrincipalOffice": "26682 ALMOND AVENUE UNIT B, REDLANDS, CA 92374"
+  },
+  {
+    "id": "dn-basketball-hoop-853",
+    "name": "DASHINGNOAH Basketball Hoop 4.82-8.53FT Adjustable Backboard",
+    "category": "Basketball Hoops",
+    "collection": "DASHINGNOAH Sports Equipment",
+    "price": 159,
+    "compareAt": 209,
+    "rating": 4.6,
+    "reviewCount": 118,
+    "color": "Black",
+    "colors": [
+      "Black",
+      "Blue"
+    ],
+    "material": "Steel pole, PE base, and impact backboard",
+    "badge": "Adjustable",
+    "image": "/assets/product-basketball-hoop-853.jpg",
+    "gallery": [
+      "/assets/product-basketball-hoop-853.jpg",
+      "/assets/promo-basketball.jpg"
+    ],
+    "summary": "A portable basketball system with an adjustable 4.82-8.53 ft height range for family driveways, youth practice, and outdoor play.",
+    "features": [
+      "4.82-8.53 ft adjustable range",
+      "Portable base design",
+      "Backboard for practice play",
+      "Outdoor driveway setup"
+    ],
+    "specs": {
+      "asin": "B0DBH3RLX2",
+      "height": "4.82-8.53 ft",
+      "type": "Portable basketball hoop",
+      "source": "Amazon listing URL"
+    },
+    "stock": 21,
+    "source": "Amazon product link supplied by user",
+    "amazonStoreUrl": "https://www.amazon.com/DASHINGNOAH-Basketball-4-82-8-53FT-Adjustable-Backboard/dp/B0DBH3RLX2?ref_=ast_sto_dp",
+    "sourceAsin": "B0DBH3RLX2",
+    "status": "active",
+    "company": "FREG LLC",
+    "businessType": "E-COMMERCE, RETAIL, WHOLESALE",
+    "companyPrincipalOffice": "26682 ALMOND AVENUE UNIT B, REDLANDS, CA 92374"
+  },
+  {
+    "id": "dn-basketball-hoop-teen",
+    "name": "DASHINGNOAH Basketball Hoop Adjustable Backboard for Teenagers",
+    "category": "Basketball Hoops",
+    "collection": "DASHINGNOAH Sports Equipment",
+    "price": 139,
+    "compareAt": 189,
+    "rating": 4.5,
+    "reviewCount": 96,
+    "color": "Blue",
+    "colors": [
+      "Blue",
+      "Black"
+    ],
+    "material": "Steel support, fillable base, and practice backboard",
+    "badge": "Teen Practice",
+    "image": "/assets/product-basketball-hoop-teen.jpg",
+    "gallery": [
+      "/assets/product-basketball-hoop-teen.jpg"
+    ],
+    "summary": "An adjustable portable basketball hoop built for teenagers and family recreation, with a driveway-friendly footprint.",
+    "features": [
+      "Height-adjustable practice setup",
+      "Teen and family recreation use",
+      "Portable weighted base",
+      "Outdoor-ready structure"
+    ],
+    "specs": {
+      "asin": "B0DBH4WC32",
+      "type": "Portable basketball hoop",
+      "audience": "Teenagers and family play",
+      "source": "Amazon listing URL"
+    },
+    "stock": 18,
+    "source": "Amazon product link supplied by user",
+    "amazonStoreUrl": "https://www.amazon.com/DASHINGNOAH-Basketball-Adjustable-Backboard-Teenagers/dp/B0DBH4WC32?ref_=ast_sto_dp",
+    "sourceAsin": "B0DBH4WC32",
+    "status": "active",
+    "company": "FREG LLC",
+    "businessType": "E-COMMERCE, RETAIL, WHOLESALE",
+    "companyPrincipalOffice": "26682 ALMOND AVENUE UNIT B, REDLANDS, CA 92374"
+  },
+  {
+    "id": "dn-portable-treadmill",
+    "name": "DASHINGNOAH Portable Treadmill with 300LB Capacity",
+    "category": "Treadmills",
+    "collection": "DASHINGNOAH Fitness Equipment",
+    "price": 229,
+    "compareAt": 299,
+    "rating": 4.8,
+    "reviewCount": 154,
+    "color": "Charcoal",
+    "colors": [
+      "Charcoal",
+      "Black"
+    ],
+    "material": "Compact steel frame with running belt and digital console",
+    "badge": "Fitness Pick",
+    "image": "/assets/product-portable-treadmill.jpg",
+    "gallery": [
+      "/assets/product-portable-treadmill.jpg",
+      "/assets/promo-treadmill.jpg"
+    ],
+    "summary": "A portable treadmill for home walking and running workouts, positioned for compact storage and app-compatible fitness routines.",
+    "features": [
+      "Portable home fitness format",
+      "300 lb capacity listing cue",
+      "Compact running deck",
+      "Compatible workout positioning"
+    ],
+    "specs": {
+      "asin": "B0D7QQ6C19",
+      "capacity": "300 lb",
+      "type": "Portable treadmill",
+      "source": "Amazon listing URL"
+    },
+    "stock": 14,
+    "source": "Amazon product link supplied by user",
+    "amazonStoreUrl": "https://www.amazon.com/Portable-Treadmills-Treadmill-Capacity-Compatible/dp/B0D7QQ6C19?ref_=ast_sto_dp",
+    "sourceAsin": "B0D7QQ6C19",
+    "status": "active",
+    "company": "FREG LLC",
+    "businessType": "E-COMMERCE, RETAIL, WHOLESALE",
+    "companyPrincipalOffice": "26682 ALMOND AVENUE UNIT B, REDLANDS, CA 92374"
+  }
+]
